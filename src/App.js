@@ -1,25 +1,45 @@
-import logo from './logo.svg';
+import React from "react";
+import { useForm,useWatch,FormProvider } from "react-hook-form";
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
 
+const MyForm=()=>{
+  const methods=useForm();
+  const {handleSubmit}=methods;
+
+const watchedFields=useWatch({
+  control:methods.control,
+  defaultValue:"default values",
+  name:["inputA","inputB"],
+});
+
+const onSubmit=(data)=>{
+  console.log(data);
+};
+
+return(
+  <form onSubmit={handleSubmit(onSubmit)}>
+    <label htmlFor="inputA">Input A</label>
+      <input {...methods.register("inputA")}/>
+    <label htmlFor="inputB">Input B</label>
+      <input {...methods.register("inputB")}/>
+
+      <p>Watched Values:</p>
+      <ul>
+        {watchedFields.map((value,index)=>(
+          <li key={index}>{value}</li>
+        ))}
+      </ul>
+      <button type="submit">Submit</button>
+  </form>
+);
+};
+const App=()=>{
+  const methods=useForm();
+  return(
+    <FormProvider {...methods}>
+      <MyForm/>
+    </FormProvider>
+  );
+};
 export default App;
